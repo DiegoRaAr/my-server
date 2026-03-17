@@ -1,0 +1,42 @@
+pipeline {
+  agent any
+
+  options {
+    timestamps()
+    disableConcurrentBuilds()
+  }
+
+  environment {
+    IMAGE_NAME = 'TU_USUARIO_DOCKERHUB/home-frontend'
+    DOCKERHUB_CREDS = credentials('dockerhub-credentials')
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Build image') {
+      steps {
+        sh 'docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$BUILD_NUMBER .'
+      }
+    }
+
+    stage('Push image') {
+      steps {
+        sh 'echo "$DOCKERHUB_CREDS_PSW" | docker login -u "$DOCKERHUB_CREDS_USR" --password-stdin'
+        sh 'docker push $IMAGE_NAME:latest'
+        sh 'docker push $IMAGE_NAME:$BUILD_NUMBER'
+        sh 'docker logout'
+      }
+    }
+  }
+
+  post {
+    always {
+      sh 'docker image prune -f || true'
+    }
+  }
+}
