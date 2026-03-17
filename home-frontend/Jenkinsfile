@@ -8,6 +8,7 @@ pipeline {
 
   environment {
     IMAGE_NAME = 'diegoraar/home-frontend'
+    APP_DIR = 'home-frontend'
     DOCKERHUB_CREDS = credentials('dockerhub-credentials')
   }
 
@@ -20,7 +21,16 @@ pipeline {
 
     stage('Build image') {
       steps {
-        sh 'docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$BUILD_NUMBER .'
+        sh '''
+          if [ -f Dockerfile ]; then
+            docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$BUILD_NUMBER .
+          elif [ -f "$APP_DIR/Dockerfile" ]; then
+            docker build -f "$APP_DIR/Dockerfile" -t $IMAGE_NAME:latest -t $IMAGE_NAME:$BUILD_NUMBER "$APP_DIR"
+          else
+            echo "No se encontró Dockerfile ni en raíz ni en $APP_DIR"
+            exit 1
+          fi
+        '''
       }
     }
 
