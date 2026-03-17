@@ -4,5 +4,5 @@ services:
     pull_policy: always
     container_name: home-frontend
     ports:
-      - "80:80"
+      - "127.0.0.1:8080:80"
     restart: unless-stopped
