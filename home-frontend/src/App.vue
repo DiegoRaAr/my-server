@@ -77,7 +77,7 @@ const skills = {
     </section>
 
     <section class="contact-section">
-      <h2>🖂 Contacto</h2>
+      <h2>✉️ Contacto</h2>
       <p>
         Correo:
         <a :href="`mailto:${contact.email}`">{{ contact.email }}</a>
@@ -133,7 +133,7 @@ const skills = {
 
 
     <section class="projects-section">
-      <h2>📁 Proyecto</h2>
+      <h2>📁 Proyectos</h2>
       <article class="project-card">
         <h3>{{ project.title }}</h3>
         <p>
